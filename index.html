@@ -111,10 +111,50 @@
     }
     #btn-mapa:active { transform: scale(0.93); filter: brightness(1.2); }
 
+    /* ===== SOLO MÓVIL (body.movil) =====  --ui = escala de toda la interfaz: baja el número para hacerla más pequeña */
+    body.movil { --ui: .72; }
+    body.movil #hud { zoom: var(--ui); max-width: 560px; }
+    body.movil #hud-celda { display: none !important; }
+    body.movil #panel-mision { zoom: var(--ui); left: auto !important; right: 8px !important; top: 6px !important; transform: none !important; max-width: 300px !important; text-align: right !important; }
+    body.movil #info-panel { zoom: var(--ui); top: 56px !important; transform: none !important; left: 8px !important; max-height: calc(100vh - 90px); overflow-y: auto; }
+    body.movil #tutorial { zoom: var(--ui); top: 64px !important; right: 8px !important; width: 340px !important; }
+    body.movil #comandante { zoom: var(--ui); bottom: 64px !important; }
+    body.movil #aviso-senal { zoom: var(--ui); top: 52px !important; }
+    body.movil #barra-senal, body.movil #barra-dron { zoom: var(--ui); top: 96px !important; }
+    body.movil #btn-e { width: 46px !important; height: 46px !important; font-size: 20px !important; right: 128px !important; bottom: 14px !important; }
+    body.movil #joystick { left: 14px !important; bottom: 14px !important; }
+    body.movil #joystick-base { width: 104px; height: 104px; }
+    body.movil #joystick-knob { width: 46px; height: 46px; }
+    body.movil #btn-mapa { width: 46px; height: 46px; font-size: 20px; right: 12px; bottom: 12px; }
+    body.movil #minimap { width: 104px !important; height: 104px !important; right: 12px !important; top: auto !important; bottom: 66px !important; border-width: 1px !important; border-radius: 6px !important; }
+
+    /* Menú de construcción compacto: abajo al centro, una sola fila con scroll */
+    body.movil #menu-construir { zoom: var(--ui); top: auto !important; bottom: 6px !important; right: auto !important; left: 50% !important; transform: translateX(-50%); width: 540px !important; max-height: none !important; align-items: stretch !important; }
+    body.movil #menu-construir .bm-panel { padding: 6px !important; gap: 5px !important; }
+    body.movil #menu-construir .bm-info { min-height: 0 !important; padding: 4px 9px !important; }
+    body.movil #menu-construir .bm-txt { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    body.movil #menu-construir .bm-fila { flex-wrap: nowrap !important; justify-content: flex-start !important; overflow-x: auto; min-height: 0 !important; padding-bottom: 3px; -webkit-overflow-scrolling: touch; }
+    body.movil #menu-construir .bm-fila > button { flex: 0 0 auto !important; width: 92px !important; }
+    body.movil #menu-construir > button { align-self: center !important; }
+    /* Barra ✔ / ✖ */
+    body.movil #barra-construir { bottom: 10px !important; }
+    body.movil #barra-construir button { width: 54px !important; height: 54px !important; font-size: 24px !important; }
+    body.movil #barra-construir .txt { font-size: 12px !important; }
+
+    .bm { position: fixed; z-index: 100; width: 46px; height: 46px; border-radius: 50%; border: 2px solid rgba(255,255,255,.5); color: #fff; font-size: 20px;
+      display: flex; align-items: center; justify-content: center; touch-action: none; user-select: none; cursor: pointer; font-family: sans-serif; }
+    .bm:active { transform: scale(.93); filter: brightness(1.2); }
+    #btn-rover { right: 12px; bottom: 178px; background: rgba(61,143,209,.9); }
+    #btn-atacar { right: 68px; bottom: 14px; width: 54px; height: 54px; font-size: 24px; background: rgba(200,60,60,.92); }
+    #btn-reiniciar { right: 12px; top: 110px; width: auto; height: auto; padding: 9px 16px; border-radius: 12px; font: 700 14px sans-serif; background: rgba(200,60,60,.95); }
+    body.pc .bm { display: none !important; }
+    body.movil #barra-base { zoom: var(--ui); bottom: auto !important; top: 140px !important; }
+    body.movil #barra-hack { zoom: var(--ui); bottom: auto !important; top: 190px !important; }
+
     .oculto { display: none !important; }
     body.pc #joystick, body.pc #btn-mapa { display: none !important; }
   </style>
-  <script type="module" crossorigin src="/Juego-de-Colonia/assets/index-6Or2GB4c.js"></script>
+  <script type="module" crossorigin src="/Juego-de-Colonia/assets/index-B3A2k999.js"></script>
 </head>
 <body>
   <div id="app"></div>
@@ -158,6 +198,11 @@
 
   <!-- Botón para mostrar / ocultar el minimapa -->
   <button id="btn-mapa" class="oculto" title="Mostrar / ocultar mapa">🗺️</button>
+
+  <!-- Botones extra solo móvil -->
+  <button id="btn-rover" class="bm oculto" title="Volver al rover">🎯</button>
+  <button id="btn-atacar" class="bm oculto" title="Atacar (mantén pulsado)">⚔️</button>
+  <button id="btn-reiniciar" class="bm oculto">🔄 Reintentar</button>
 
 </body>
 </html>
