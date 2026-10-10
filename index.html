@@ -7,12 +7,25 @@
   <style>
     html, body { margin: 0; height: 100%; overflow: hidden; background: #120a0b; touch-action: none; }
     #app { position: fixed; inset: 0; }
-    #minimap { position: fixed; right: 12px; top: 60px; border: 2px solid #000; border-radius: 4px; cursor: pointer; image-rendering: pixelated; box-shadow: 0 2px 10px #0008; }
+    #minimap { position: fixed; right: 12px; top: 200px; border: 2px solid #000; border-radius: 4px; cursor: pointer; image-rendering: pixelated; box-shadow: 0 2px 10px #0008; }
+
+    /* --- Menú de inicio --- */
+    #menu-inicio {
+      position: fixed; inset: 0; z-index: 1000; background: #120a0b;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 18px; font-family: sans-serif;
+    }
+    #menu-inicio h1 { color: #ff9a2e; margin: 0 0 20px; font-size: 40px; }
+    #menu-inicio button {
+      width: 260px; padding: 18px; font-size: 20px; border-radius: 12px;
+      border: 2px solid #6b4a3a; background: rgba(110, 60, 30, .9); color: #fff; cursor: pointer;
+    }
+    #menu-inicio button:active { transform: scale(0.96); }
 
     /* --- Joystick virtual --- */
     #joystick {
       position: fixed;
-      bottom: 25px;
+      bottom: 70px;
       left: 25px;
       z-index: 100;
       user-select: none;
@@ -43,14 +56,18 @@
     }
     #joystick.activo #joystick-knob { background: rgba(255, 200, 100, 1); }
 
-    /* --- Botones de acción --- */
-    .boton-accion {
+    /* --- Botón mostrar / ocultar minimapa (equivale a M) --- */
+    #btn-mapa {
       position: fixed;
+      bottom: 70px;
+      right: 25px;
+      width: 65px;
+      height: 65px;
       border-radius: 50%;
+      background: rgba(76, 175, 80, 0.85);
       border: 2px solid rgba(255, 255, 255, 0.5);
       color: white;
-      font-size: 26px;
-      font-weight: bold;
+      font-size: 28px;
       cursor: pointer;
       z-index: 100;
       user-select: none;
@@ -60,41 +77,32 @@
       justify-content: center;
       font-family: sans-serif;
     }
-    .boton-accion:active { transform: scale(0.93); filter: brightness(1.2); }
+    #btn-mapa:active { transform: scale(0.93); filter: brightness(1.2); }
 
-    #btn-accion {
-      bottom: 40px;
-      right: 30px;
-      width: 80px;
-      height: 80px;
-      background: rgba(61, 143, 209, 0.85);
-    }
-    #btn-correr {
-      bottom: 135px;
-      right: 35px;
-      width: 65px;
-      height: 65px;
-      background: rgba(255, 100, 80, 0.85);
-      font-size: 18px;
-    }
-
-    /* Ocultar todo el control hasta que el rover esté listo */
     .oculto { display: none !important; }
+    body.pc #joystick, body.pc #btn-mapa { display: none !important; }
   </style>
-  <script type="module" crossorigin src="/Juego-de-Colonia/assets/index-BJbbZmBr.js"></script>
+  <script type="module" crossorigin src="/Juego-de-Colonia/assets/index-6Or2GB4c.js"></script>
 </head>
 <body>
   <div id="app"></div>
 
-  <!-- Controles táctiles (solo se ven cuando el rover existe) -->
+  <!-- Menú de inicio -->
+  <div id="menu-inicio">
+    <h1>Colonia</h1>
+    <button data-modo="movil">📱 Jugar en móvil</button>
+    <button data-modo="pc">🖥️ Jugar en PC</button>
+  </div>
+
+  <!-- Joystick -->
   <div id="joystick" class="oculto">
     <div id="joystick-base">
       <div id="joystick-knob"></div>
     </div>
   </div>
 
-  <button id="btn-accion" class="boton-accion oculto" title="Volver al rover">⌂</button>
-  <button id="btn-correr" class="boton-accion oculto" title="Correr">⚡</button>
+  <!-- Botón para mostrar / ocultar el minimapa -->
+  <button id="btn-mapa" class="oculto" title="Mostrar / ocultar mapa">🗺️</button>
 
 </body>
 </html>
