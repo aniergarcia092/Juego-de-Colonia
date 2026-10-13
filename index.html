@@ -1,208 +1,37 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Colonia · Pixi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Pixi Project</title>
   <style>
-    html, body { margin: 0; height: 100%; overflow: hidden; background: #120a0b; touch-action: none; }
+    html, body { margin: 0; height: 100%; background: #120a0b; overflow: hidden; font-family: system-ui, sans-serif; color: #eee; }
     #app { position: fixed; inset: 0; }
-    #minimap { position: fixed; right: 12px; top: 200px; border: 2px solid #000; border-radius: 4px; cursor: pointer; image-rendering: pixelated; box-shadow: 0 2px 10px #0008; }
-
-    /* --- Menú de inicio --- */
-    #menu-inicio {
-      position: fixed; inset: 0; z-index: 1000; font-family: 'Segoe UI', sans-serif; color: #fff;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 16px; box-sizing: border-box;
-      background: radial-gradient(ellipse at 50% 110%, #8a3a18 0%, #3a1610 45%, #120a0b 80%);
-      overflow: hidden;
-    }
-    #menu-inicio::before {                       /* estrellas */
-      content: ''; position: absolute; inset: 0; opacity: .8; pointer-events: none;
-      background-image:
-        radial-gradient(1.5px 1.5px at 12% 18%, #fff, transparent), radial-gradient(1px 1px at 27% 62%, #fff, transparent),
-        radial-gradient(1.5px 1.5px at 44% 12%, #ffd9a8, transparent), radial-gradient(1px 1px at 63% 30%, #fff, transparent),
-        radial-gradient(1.5px 1.5px at 78% 14%, #fff, transparent), radial-gradient(1px 1px at 88% 55%, #ffd9a8, transparent),
-        radial-gradient(1px 1px at 8% 80%, #fff, transparent), radial-gradient(1.5px 1.5px at 55% 70%, #fff, transparent);
-      animation: titilar 4s ease-in-out infinite alternate;
-    }
-    @keyframes titilar { from { opacity: .4; } to { opacity: .9; } }
-    #menu-inicio .planeta {                      /* planeta rojo en el horizonte */
-      position: absolute; bottom: -38vmin; left: 50%; transform: translateX(-50%);
-      width: 110vmin; height: 110vmin; border-radius: 50%; pointer-events: none;
-      background: radial-gradient(circle at 50% 12%, #d9703a, #a8431f 40%, #4a1a10 75%);
-      box-shadow: 0 0 80px #ff7a3a55;
-    }
-    #menu-inicio h1 { position: relative; margin: 0; font-size: clamp(36px, 8vw, 64px); letter-spacing: 6px; color: #ff9a2e; text-shadow: 0 0 24px #ff7a1a88, 0 3px 0 #5a2208; }
-    #menu-inicio .sub { position: relative; margin: 0 0 18px; opacity: .8; letter-spacing: 3px; font-size: clamp(12px, 3vw, 16px); }
-    #menu-inicio .opciones { position: relative; display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
-    #menu-inicio button {
-      position: relative; width: 250px; padding: 20px 16px; border-radius: 16px; cursor: pointer; color: #fff;
-      border: 2px solid rgba(255, 190, 120, .45); background: rgba(40, 18, 12, .78); backdrop-filter: blur(6px);
-      display: flex; flex-direction: column; align-items: center; gap: 6px; font-family: inherit;
-      transition: transform .15s, border-color .15s, background .15s; touch-action: manipulation;
-    }
-    #menu-inicio button .ico { font-size: 44px; }
-    #menu-inicio button .tit { font-size: 22px; font-weight: 700; }
-    #menu-inicio button .desc { font-size: 13px; opacity: .75; line-height: 1.35; }
-    #menu-inicio button:hover { transform: translateY(-4px); border-color: #ff9a2e; background: rgba(110, 50, 20, .88); }
-    #menu-inicio button:active { transform: scale(.96); }
-    #menu-inicio button.reco { border-color: #ff9a2e; box-shadow: 0 0 22px #ff9a2e55; }
-    #menu-inicio button.reco::after {
-      content: 'Recomendado'; position: absolute; top: -11px; background: #ff9a2e; color: #2a1008;
-      font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 10px;
-    }
-    #menu-inicio .pie { position: relative; opacity: .5; font-size: 12px; margin-top: 10px; }
-    @media (max-height: 460px) { #menu-inicio button { width: 210px; padding: 12px; } #menu-inicio button .ico { font-size: 30px; } #menu-inicio button .desc { display: none; } }
-
-    /* --- Joystick virtual --- */
-    #joystick {
-      position: fixed;
-      bottom: 70px;
-      left: 25px;
-      z-index: 100;
-      user-select: none;
-      touch-action: none;
-      opacity: 0.85;
-    }
-    #joystick-base {
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.10);
-      border: 2px solid rgba(255, 255, 255, 0.35);
-      backdrop-filter: blur(4px);
-      position: relative;
-    }
-    #joystick-knob {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: rgba(255, 154, 46, 0.85);
-      border: 2px solid rgba(255, 255, 255, 0.6);
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      transition: background 0.1s;
-    }
-    #joystick.activo #joystick-knob { background: rgba(255, 200, 100, 1); }
-
-    /* --- Botón mostrar / ocultar minimapa (equivale a M) --- */
-    #btn-mapa {
-      position: fixed;
-      bottom: 70px;
-      right: 25px;
-      width: 65px;
-      height: 65px;
-      border-radius: 50%;
-      background: rgba(76, 175, 80, 0.85);
-      border: 2px solid rgba(255, 255, 255, 0.5);
-      color: white;
-      font-size: 28px;
-      cursor: pointer;
-      z-index: 100;
-      user-select: none;
-      touch-action: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: sans-serif;
-    }
-    #btn-mapa:active { transform: scale(0.93); filter: brightness(1.2); }
-
-    /* ===== SOLO MÓVIL (body.movil) =====  --ui = escala de toda la interfaz: baja el número para hacerla más pequeña */
-    body.movil { --ui: .72; }
-    body.movil #hud { zoom: var(--ui); max-width: 560px; }
-    body.movil #hud-celda { display: none !important; }
-    body.movil #panel-mision { zoom: var(--ui); left: auto !important; right: 8px !important; top: 6px !important; transform: none !important; max-width: 300px !important; text-align: right !important; }
-    body.movil #info-panel { zoom: var(--ui); top: 56px !important; transform: none !important; left: 8px !important; max-height: calc(100vh - 90px); overflow-y: auto; }
-    body.movil #tutorial { zoom: var(--ui); top: 64px !important; right: 8px !important; width: 340px !important; }
-    body.movil #comandante { zoom: var(--ui); bottom: 64px !important; }
-    body.movil #aviso-senal { zoom: var(--ui); top: 52px !important; }
-    body.movil #barra-senal, body.movil #barra-dron { zoom: var(--ui); top: 96px !important; }
-    body.movil #btn-e { width: 46px !important; height: 46px !important; font-size: 20px !important; right: 128px !important; bottom: 14px !important; }
-    body.movil #joystick { left: 14px !important; bottom: 14px !important; }
-    body.movil #joystick-base { width: 104px; height: 104px; }
-    body.movil #joystick-knob { width: 46px; height: 46px; }
-    body.movil #btn-mapa { width: 46px; height: 46px; font-size: 20px; right: 12px; bottom: 12px; }
-    body.movil #minimap { width: 104px !important; height: 104px !important; right: 12px !important; top: auto !important; bottom: 66px !important; border-width: 1px !important; border-radius: 6px !important; }
-
-    /* Menú de construcción compacto: abajo al centro, una sola fila con scroll */
-    body.movil #menu-construir { zoom: var(--ui); top: auto !important; bottom: 6px !important; right: auto !important; left: 50% !important; transform: translateX(-50%); width: 540px !important; max-height: none !important; align-items: stretch !important; }
-    body.movil #menu-construir .bm-panel { padding: 6px !important; gap: 5px !important; }
-    body.movil #menu-construir .bm-info { min-height: 0 !important; padding: 4px 9px !important; }
-    body.movil #menu-construir .bm-txt { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    body.movil #menu-construir .bm-fila { flex-wrap: nowrap !important; justify-content: flex-start !important; overflow-x: auto; min-height: 0 !important; padding-bottom: 3px; -webkit-overflow-scrolling: touch; }
-    body.movil #menu-construir .bm-fila > button { flex: 0 0 auto !important; width: 92px !important; }
-    body.movil #menu-construir > button { align-self: center !important; }
-    /* Barra ✔ / ✖ */
-    body.movil #barra-construir { bottom: 10px !important; }
-    body.movil #barra-construir button { width: 54px !important; height: 54px !important; font-size: 24px !important; }
-    body.movil #barra-construir .txt { font-size: 12px !important; }
-
-    .bm { position: fixed; z-index: 100; width: 46px; height: 46px; border-radius: 50%; border: 2px solid rgba(255,255,255,.5); color: #fff; font-size: 20px;
-      display: flex; align-items: center; justify-content: center; touch-action: none; user-select: none; cursor: pointer; font-family: sans-serif; }
-    .bm:active { transform: scale(.93); filter: brightness(1.2); }
-    #btn-rover { right: 12px; bottom: 178px; background: rgba(61,143,209,.9); }
-    #btn-atacar { right: 68px; bottom: 14px; width: 54px; height: 54px; font-size: 24px; background: rgba(200,60,60,.92); }
-    #btn-reiniciar { right: 12px; top: 110px; width: auto; height: auto; padding: 9px 16px; border-radius: 12px; font: 700 14px sans-serif; background: rgba(200,60,60,.95); }
-    body.pc .bm { display: none !important; }
-    body.movil #barra-base { zoom: var(--ui); bottom: auto !important; top: 140px !important; }
-    body.movil #barra-hack { zoom: var(--ui); bottom: auto !important; top: 190px !important; }
-
+    #menu-inicio { position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 16px; background: #120a0b; }
+    #menu-inicio button { font-size: 20px; padding: 14px 32px; border: 0; border-radius: 10px;
+      background: #ff9a2e; color: #120a0b; cursor: pointer; }
     .oculto { display: none !important; }
-    body.pc #joystick, body.pc #btn-mapa { display: none !important; }
+    #btn-rover, #btn-atacar, #btn-reiniciar { position: fixed; z-index: 20; display: none; font-size: 18px;
+      padding: 12px 16px; border: 0; border-radius: 12px; background: rgba(255,154,46,.9); color: #120a0b; }
+    body.movil #btn-rover, body.movil #btn-atacar, body.movil #btn-reiniciar { display: block; }
+    #btn-rover { left: 12px; bottom: 120px; }
+    #btn-atacar { right: 12px; bottom: 120px; }
+    #btn-reiniciar { left: 50%; top: 40%; transform: translateX(-50%); }
   </style>
-  <script type="module" crossorigin src="/Juego-de-Colonia/assets/index-d08uVl6I.js"></script>
+  <script type="module" crossorigin src="/assets/index-Dohf7lhE.js"></script>
 </head>
 <body>
-  <div id="app"></div>
-
-  <!-- Menú de inicio -->
   <div id="menu-inicio">
-    <div class="planeta"></div>
-    <h1>ARES-E20</h1>
-    <p class="sub">COLONIA MARTE</p>
-    <div class="opciones">
-      <button data-modo="movil">
-        <span class="ico">📱</span><span class="tit">Jugar en móvil</span>
-        <span class="desc">Joystick táctil, pellizca para zoom y botones para construir</span>
-      </button>
-      <button data-modo="pc">
-        <span class="ico">🖥️</span><span class="tit">Jugar en PC</span>
-        <span class="desc">Teclado y ratón: WASD, rueda para zoom y atajos</span>
-      </button>
-    </div>
-    <div class="pie">Elige cómo quieres jugar</div>
-  </div>
-  <script>
-    // Marca como recomendado el modo según el dispositivo y, en móvil, pasa a pantalla completa
-    (function () {
-      var tactil = matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
-      var rec = document.querySelector('#menu-inicio button[data-modo="' + (tactil ? 'movil' : 'pc') + '"]');
-      if (rec) rec.classList.add('reco');
-      document.querySelector('#menu-inicio button[data-modo="movil"]').addEventListener('click', function () {
-        try { var f = document.documentElement.requestFullscreen && document.documentElement.requestFullscreen();
-              if (f && f.then) f.then(function () { return screen.orientation.lock('landscape'); }).catch(function () {}); } catch (e) {}
-      });
-    })();
-  </script>
-
-  <!-- Joystick -->
-  <div id="joystick" class="oculto">
-    <div id="joystick-base">
-      <div id="joystick-knob"></div>
-    </div>
+    <h1>Elige tu modo</h1>
+    <button data-modo="pc">🖥️ PC</button>
+    <button data-modo="movil">📱 Móvil</button>
   </div>
 
-  <!-- Botón para mostrar / ocultar el minimapa -->
-  <button id="btn-mapa" class="oculto" title="Mostrar / ocultar mapa">🗺️</button>
-
-  <!-- Botones extra solo móvil -->
-  <button id="btn-rover" class="bm oculto" title="Volver al rover">🎯</button>
-  <button id="btn-atacar" class="bm oculto" title="Atacar (mantén pulsado)">⚔️</button>
-  <button id="btn-reiniciar" class="bm oculto">🔄 Reintentar</button>
+  <div id="app"></div>
+  <button id="btn-rover" class="oculto">🎯</button>
+  <button id="btn-atacar" class="oculto">⚔️</button>
+  <button id="btn-reiniciar" class="oculto">🔄</button>
 
 </body>
 </html>
